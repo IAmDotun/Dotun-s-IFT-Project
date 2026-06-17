@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Document Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <div class="upload-panel">
+            <h2>Document Ingestion</h2>
+            <p class="subtitle">Select one or multiple PDFs to add to the repository.</p>
+            
+            <input type="file" id="pdfUploader" accept="application/pdf" multiple>
+            
+            <button id="processButton">Upload Documents</button>
+            <div id="statusMessage" class="status-message"></div>
+        </div>
+
+        <div class="repository-panel">
+            <h2>Session Repository</h2>
+            <p class="subtitle">Scroll to view and download ingested files.</p>
+            
+            <ul id="documentList" class="document-list">
+                <li class="empty-state">No documents currently in the repository.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
