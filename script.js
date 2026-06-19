@@ -1,37 +1,89 @@
+
+// =========================================
+// DOCUMENT MANAGEMENT SYSTEM
+// UPDATED VERSION
+// =========================================
+
+// Get references to HTML elements
 const uploader = document.getElementById('pdfUploader');
 const button = document.getElementById('processButton');
 const documentList = document.getElementById('documentList');
 const statusMessage = document.getElementById('statusMessage');
 
-let repository = []; 
 
-button.addEventListener('click', function() {
-    statusMessage.textContent = ""; 
+// =========================================
+// CORRECTION #1
+// Add permanent documents here.
+//
+// IMPORTANT:
+// Place the actual PDF file inside:
+//
+// project/
+// ├── index.html
+// ├── script.js
+// ├── style.css
+// └── documents/
+//     └── CSC322-Lecture-Notes.pdf
+//
+// The URL below MUST match the file location.
+// =========================================
 
-    // Check if the user selected anything at all
+let repository = [
+    {
+        name: "IFT 302 Lecture Notes",
+        size: "Permanent Document",
+        url: "REAL IFT 302 Notes.pdf"
+    }
+];
+
+
+// =========================================
+// CORRECTION #2
+// Console verification.
+//
+// Open browser console:
+// Chrome: F12 -> Console
+// Firefox: F12 -> Console
+//
+// You should see the permanent document.
+// =========================================
+
+console.log("Repository loaded:", repository);
+
+
+// =========================================
+// Upload Button Event
+// =========================================
+
+button.addEventListener('click', function () {
+
+    statusMessage.textContent = "";
+
+    // Check if any file was selected
     if (uploader.files.length === 0) {
         statusMessage.style.color = "#ef4444";
         statusMessage.textContent = "Error: No documents selected.";
         return;
     }
 
-    // Variables to track our success and failure rates during the loop
     let successCount = 0;
     let errorCount = 0;
 
-    // The Loop: We examine every file the user selected
+    // Process each uploaded file
     for (let i = 0; i < uploader.files.length; i++) {
+
         let uploadedFile = uploader.files[i];
 
-        // Skeptical check: Is this specific file truly a PDF?
+        // PDF validation
         if (uploadedFile.type !== "application/pdf") {
-            errorCount++; // Count the error
-            continue;     // Skip this invalid file and move to the next one
+            errorCount++;
+            continue;
         }
 
-        // Process the valid PDF
+        // Create temporary browser URL
         let fileURL = URL.createObjectURL(uploadedFile);
 
+        // Store document information
         let documentRecord = {
             name: uploadedFile.name,
             size: (uploadedFile.size / 1024).toFixed(2) + " KB",
@@ -39,40 +91,87 @@ button.addEventListener('click', function() {
         };
 
         repository.push(documentRecord);
-        successCount++; // Count the success
+
+        successCount++;
     }
 
-    // Report the final results back to the user
+    // Status messages
     if (successCount > 0 && errorCount === 0) {
+
         statusMessage.style.color = "#10b981";
-        statusMessage.textContent = `Success: ${successCount} document(s) ingested.`;
+        statusMessage.textContent =
+            `Success: ${successCount} document(s) ingested.`;
+
     } else if (successCount > 0 && errorCount > 0) {
-        statusMessage.style.color = "#f59e0b"; // Warning color (orange)
-        statusMessage.textContent = `Warning: ${successCount} ingested, but ${errorCount} failed (Not a PDF).`;
+
+        statusMessage.style.color = "#f59e0b";
+        statusMessage.textContent =
+            `Warning: ${successCount} ingested, but ${errorCount} failed (Not a PDF).`;
+
     } else {
+
         statusMessage.style.color = "#ef4444";
-        statusMessage.textContent = "Error: All selected files were invalid formats.";
+        statusMessage.textContent =
+            "Error: All selected files were invalid formats.";
     }
-    
-    // Clear the input and update the screen
+
     uploader.value = "";
+
     renderRepository();
+
+    // =========================================
+    // CORRECTION #3
+    // Verify uploads are being stored.
+    // Check Console after uploading.
+    // =========================================
+
+    console.log("Updated Repository:", repository);
 });
 
-// The render function remains exactly the same
+
+// =========================================
+// Render Repository
+// =========================================
+
 function renderRepository() {
+
     documentList.innerHTML = "";
 
-    repository.forEach(function(doc) {
+    // If repository is empty
+    if (repository.length === 0) {
+
+        documentList.innerHTML =
+            '<li class="empty-state">No documents currently in the repository.</li>';
+
+        return;
+    }
+
+    repository.forEach(function (doc) {
+
         const listItem = document.createElement('li');
 
         const fileInfo = document.createElement('span');
-        fileInfo.innerHTML = `<strong>${doc.name}</strong> <br> <small style="color: #64748b;">${doc.size}</small>`;
+
+        fileInfo.innerHTML = `
+            <strong>${doc.name}</strong>
+            <br>
+            <small style="color:#64748b;">${doc.size}</small>
+        `;
 
         const downloadLink = document.createElement('a');
+
+        // =========================================
+        // CORRECTION #4
+        // Proper download configuration
+        // =========================================
+
         downloadLink.href = doc.url;
-        downloadLink.download = "Retrieved_" + doc.name;
+
+        // Download using original file name
+        downloadLink.setAttribute('download', doc.name);
+
         downloadLink.textContent = "Download";
+
         downloadLink.className = "download-btn";
 
         listItem.appendChild(fileInfo);
@@ -81,3 +180,38 @@ function renderRepository() {
         documentList.appendChild(listItem);
     });
 }
+
+
+// =========================================
+// CORRECTION #5
+// Show permanent documents immediately
+// when page loads.
+// =========================================
+
+renderRepository();
+
+
+// =========================================
+// CORRECTION #6
+// Final startup check.
+//
+// Open browser console.
+// You should see:
+//
+// Repository loaded:
+// [
+//   {
+//      name: "CSC 322 Lecture Notes",
+//      size: "Permanent Document",
+//      url: "./documents/CSC322-Lecture-Notes.pdf"
+//   }
+// ]
+//
+// If you don't see it,
+// script.js is not loading.
+//
+// If you see it but download fails,
+// the file path is wrong.
+// =========================================
+
+console.log("Application started successfully.");
